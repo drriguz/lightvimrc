@@ -1,107 +1,113 @@
-set nocompatible
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
-behave mswin
-
-" disable vi compate mode
-set nocompatible
-set nobackup
-
-set autochdir
-
-" common settings
-set nu
-set cursorline
-set ruler
-
-" syntax setting
-syntax on
-set autoindent
-set smartindent
-
-" search setting
-set ignorecase smartcase
-set incsearch
-set hlsearch
-
-" disable error bell
-set noerrorbells
-set noeb
-set vb
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let mapleader=","        " The default map leader is \
+let g:mapleader=","
+set noerrorbells         " Disable error sound
+set novisualbell
 set vb t_vb=
+set timeoutlen=1000      " timeoutlen is used for mapping delays
+set ttimeoutlen=0        " ttimeoutlen is used for code delays(eg. press ESC from command mode)
 
-" enable match
-set showmatch
-set matchtime=1
-
-set magic
-set hidden
-
-" enable folding
-set foldenable
-set foldmethod=syntax
-set foldcolumn=0
-set foldclose=all
-set foldlevelstart=99
-
-" set tab size
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set scrolloff=7          " Set 7 lines to the cursor when moving vertically using j/k(use zz to center the current line)
+set wildmenu             " Turn on the WiLd menu(when type tab in command mode the menu will show above it)
+set ruler                " Always show current position
+set nu
+set cursorline           " Hight light current line
+syntax enable            " Enable syntax highlighting
+set background=dark      " Set solarized theme
+colorscheme solarized
+set lazyredraw           " Don't redraw while executing macros
+" set cmdheight=1        " Height of the command bar
+set guioptions-=r        " Disable scrollbars in GUI
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+set laststatus=2         " Always show the status line
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\/%L\ \ Column:\ %c
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    endif
+    return ''
+endfunction
+hi statusline guibg=red guifg=black
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Search & Matching
+set ignorecase           " Ignore case when searching
+set smartcase            " WHen searching try to be smart about cases
+set hlsearch             " Highlight search result(:nohlsearch or :noh to cancel highlight)
+set incsearch            " Makes search act like search in modern browsers
+set magic                " Turn magic mode on, when searching by regular expression
+set showmatch            " Show matching brackets when cursor is over them
+set mat=1                " How many tenths of a second to blink when matching brackets
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tabs & Indent
+set expandtab            " Use spaces instead of tabs
+set smarttab             " Be smart when using tabs
+set shiftwidth=4         " Tab = 4 spaces
 set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set autoindent           " Indent options
+set smartindent
+set linebreak            " Wrap line and don't break a word
+set wrap
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set history=500          " Set how many lines of history VIM has to remember
+filetype plugin on       " Enable file type plugin (:set filetype=c)
+filetype indent on
+set autoread             " Auto reload file when it's changed from the outside
+set nobackup             " Turn backup off
+set nowb
+set noswapfile
+setlocal spell           " Toggle spell checking on and off
+set encoding=utf8        " Set utf8 as default encoding
+set ffs=unix             " Use unix as the standard file type
 
-" other settings
-" colorscheme desert
-set textwidth=100
-set mouse=a
+" Support for opening GBK files
+let &termencoding=&encoding
+set fileencodings=utf-8,gbk
 
+" Turn persistent undo on
+try
+    set undodir=~/.vim_runtime/temp_dirs/undodir
+    set undofile
+catch
+endtry
 
-" auto completion
-" pydiction :http://www.vim.org/scripts/script.php?script_id=850 
-" taglist   :http://www.vim.org/scripts/script.php?script_id=273
-" winmanager:http://www.vim.org/scripts/script.php?script_id=95
-" pyflakes  :http://www.vim.org/scripts/script.php?script_id=2441
-" ctags     :http://ctags.sourceforge.net/
-"
-"note:to use pyflakes ,vim shoule be compiled with +python
+" Return to last edit position when opening files
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-filetype plugin indent on
-set completeopt=longest,menu
-set wildmenu
-let g:pydiction_location='d:/Lite/pydiction/complete-dict'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Reload vimrc by F10
+nmap <F10> :source ~/.vimrc 
 
-" tag list
-let Tlist_Show_One_File=1
-let Tlist_Exit_OnlyWindow=1
+" Fast saving by press ,w
+nmap <leader>w :w!<cr>
 
-" winManager
-let g:winManagerWindowLayout='FileExplorer|TagList'
-nmap wm :WMToggle<cr>
+" :W sudo saves the file
+command! W w !sudo tee % > /dev/null
 
-" map keys
-map <F5> :call CompileAndRun()<CR>
-func! CompileAndRun()
-	exec "w"
-	if &filetype == 'c'
-		exec "!g++ % -o %<"
-		exec "! %<"
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "! %<"
-	elseif &filetype == 'java' 
-		exec "!javac %" 
-		exec "!java %<"
-	elseif &filetype == 'sh'
-		:!%
-	elseif &filetype == 'py'
-		exec "!python %"
-	elseif &filetype == 'lua'
-		exec "lua %"
-	endif
-endfunc
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-map <F8> :call Rungdb()<CR>  
-func! Rungdb()  
-	exec "w"  
-	exec "!g++ % -g -o %<"  
-	exec "!gdb %<"  
-endfunc  
+" Moving current line up-down(http://vim.wikia.com/wiki/Moving_lines_up_or_down)
+nnoremap <leader>j :m .+1<cr>==
+nnoremap <leader>k :m .-2<cr>==
+vnoremap <leader>j :m '>+1<cr>gv=gv
+vnoremap <leader>k :m '<-2<cr>gv=gv
+
+" Map space to /(search)
+map <space> /
+
+" Cancel highlight       
+nmap <leader>d :noh<cr>
+
+" Useful mappings for managing tabs
+" use gt, gT, ngt(n is tab number) to switch tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tq :tabclose<cr>
+
+" Open a new tab with the current buffer's path
+map <leader>tt :tabedit <c-r>=expand("%:p:h")<cr>/<cr>
+
+map <leader>sp :setlocal spell!<cr>
