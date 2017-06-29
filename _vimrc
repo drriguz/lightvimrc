@@ -1,4 +1,5 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Common settings
 let mapleader=","        " The default map leader is \
 let g:mapleader=","
 set noerrorbells         " Disable error sound
@@ -7,7 +8,9 @@ set vb t_vb=
 set timeoutlen=1000      " timeoutlen is used for mapping delays
 set ttimeoutlen=0        " ttimeoutlen is used for code delays(eg. press ESC from command mode)
 
+execute pathogen#infect()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" UI settings
 set scrolloff=7          " Set 7 lines to the cursor when moving vertically using j/k(use zz to center the current line)
 set wildmenu             " Turn on the WiLd menu(when type tab in command mode the menu will show above it)
 set ruler                " Always show current position
@@ -51,6 +54,7 @@ set smartindent
 set linebreak            " Wrap line and don't break a word
 set wrap
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Environment
 set history=500          " Set how many lines of history VIM has to remember
 filetype plugin on       " Enable file type plugin (:set filetype=c)
 filetype indent on
@@ -77,7 +81,7 @@ endtry
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Reload vimrc by F10
+" Key mapping
 nmap <F10> :source ~/.vimrc 
 
 " Fast saving by press ,w
@@ -111,3 +115,22 @@ map <leader>tq :tabclose<cr>
 map <leader>tt :tabedit <c-r>=expand("%:p:h")<cr>/<cr>
 
 map <leader>sp :setlocal spell!<cr>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Build & Programme
+map <F5> :!%:p<cr>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap <leader>l :Goyo<cr>
+xmap <leader>l :Goyo<cr>
+
+map <leader>f :MRU<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin config
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+
+
