@@ -1,7 +1,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Common settings
-let mapleader=","        " The default map leader is \
-let g:mapleader=","
+" let mapleader=","        " The default map leader is \
+" let g:mapleader=","
 set noerrorbells         " Disable error sound
 set novisualbell
 set vb t_vb=
@@ -81,17 +81,20 @@ endtry
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <space> <leader>
+nnoremap , :
+
 " Key mapping
-nmap <F10> :source ~/.vimrc 
+nnoremap <F10> :source ~/.vimrc 
 
 " Fast saving by press ,w
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 " :W sudo saves the file
 command! W w !sudo tee % > /dev/null
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+nnoremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Moving current line up-down(http://vim.wikia.com/wiki/Moving_lines_up_or_down)
 nnoremap <leader>j :m .+1<cr>==
@@ -99,31 +102,28 @@ nnoremap <leader>k :m .-2<cr>==
 vnoremap <leader>j :m '>+1<cr>gv=gv
 vnoremap <leader>k :m '<-2<cr>gv=gv
 
-" Map space to /(search)
-map <space> /
-
 " Cancel highlight       
-nmap <leader>d :noh<cr>
+nnoremap <leader>d :noh<cr>
 
 " Useful mappings for managing tabs
 " use gt, gT, ngt(n is tab number) to switch tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tq :tabclose<cr>
+nnoremap <leader>tn :tabnew<cr>
+nnoremap <leader>to :tabonly<cr>
+nnoremap <leader>tq :tabclose<cr>
 
 " Open a new tab with the current buffer's path
-map <leader>tt :tabedit <c-r>=expand("%:p:h")<cr>/<cr>
+noremap <leader>tt :tabedit <c-r>=expand("%:p:h")<cr>/<cr>
 
-map <leader>sp :setlocal spell!<cr>
+noremap <leader>sp :setlocal spell!<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Build & Programme
-map <F5> :!%:p<cr>
+nnoremap <F5> :!%:p<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <leader>l :Goyo<cr>
-xmap <leader>l :Goyo<cr>
+" Plugin key mapping
+nnoremap <leader>l :Goyo<cr>
 
-map <leader>f :MRU<cr>
-
+nnoremap <leader>f :MRU<cr>
+nnoremap <leader>e :NERDTreeToggle<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin config
 autocmd! User GoyoEnter Limelight
@@ -133,4 +133,7 @@ let g:limelight_conceal_ctermfg = 240
 let g:limelight_conceal_guifg = 'DarkGray'
 let g:limelight_conceal_guifg = '#777777'
 
+" Open NERDTree when open a directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 
