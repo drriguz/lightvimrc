@@ -54,6 +54,7 @@ install_bundle "https://github.com/vim-scripts/mru.vim.git"
 install_bundle "https://github.com/amix/open_file_under_cursor.vim.git"
 install_bundle "https://github.com/tpope/vim-commentary.git"
 install_bundle "https://github.com/jlanzarotta/bufexplorer.git"
+install_bundle "https://github.com/rust-lang/rust.vim.git"
 
 echo "Updating vimrc..."
 cp ${current_dir}/_vimrc ~/.vimrc
